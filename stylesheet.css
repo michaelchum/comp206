@@ -1,0 +1,88 @@
+			span{
+				font-size:40px;
+				font-family: Avant Garde, Century Gothic;
+			}
+
+			#title{
+				font-family: Avant Garde, Century Gothic;
+				text-align: center;
+			}
+
+			#title span{
+				font-family: Avant Garde, Century Gothic;
+				font-size:50px;
+			}
+
+			#banner{
+				padding:0 20px;
+			}
+			
+			#banner img{
+				display:block;
+				margin:0 auto;
+				padding:0 0px;
+				height:146px;
+				width:375px;
+				border-radius: 50px;
+			}
+
+			#door{
+				height:200px;
+				width:200px;
+				border-radius: 35px;
+			}
+			
+			#east{
+				display:inline; 
+				position:relative;
+				left:520px;
+				width=200px;
+				height=200px;
+			}
+
+			#west{
+				display:inline; 
+				position:relative;
+				left:-520px;
+				width=200px;
+				height=200px;
+			}
+
+			#lookaround{
+				width:0px;
+				height:0px;
+				position:relative;
+				font-family: Avant Garde, Century Gothic;
+				font-size:32px;
+				animation-name:myfirst;
+				animation-duration:5s;
+				animation-timing-function:linear;
+				animation-delay:2s;
+				animation-iteration-count:infinite;
+				animation-direction:alternate;
+				animation-play-state:running;
+				/* Safari and Chrome: */
+				-webkit-animation-name:myfirst;
+				-webkit-animation-duration:5s;
+				-webkit-animation-timing-function:linear;
+				-webkit-animation-delay:2s;
+				-webkit-animation-iteration-count:infinite;
+				-webkit-animation-direction:alternate;
+				-webkit-animation-play-state:running;
+			}
+			/* Internet Explorer */
+			@keyframes myfirst{
+				0%   {color:red; left:0px; top:0px;}
+				25%  {color:yellow; left:100px; top:0px;}
+				50%  {color:blue; left:100px; top:100px;}
+				75%  {color:green; left:0px; top:100px;}
+				100% {color:red; left:0px; top:0px;}
+			}
+			/* Safari and Chrome */
+			@-webkit-keyframes myfirst{ 
+				0%   {color:red; left:0px; top:0px;}
+				25%  {color:yellow; left:100px; top:0px;}
+				50%  {color:blue; left:100px; top:100px;}
+				75%  {color:green; left:0px; top:100px;}
+				100% {color:red; left:0px; top:0px;}
+			}
