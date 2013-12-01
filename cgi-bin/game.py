@@ -42,6 +42,25 @@ except (Cookie.CookieError, KeyError):
 	clickCount = int(cookie['clickCount'].value)
 	userTable = decodeList(cookie['userTable'].value)
 
+# If second is already card open
+if (clickCount > 1):
+	for x in range(16):
+		# Find the two opened cards
+		if (userTable[x]==1):
+			for y in range(x+1, 16):
+				if (userTable[y]==1):
+					#If cards match
+					if (solTable[x]==solTable[y]):
+						userTable[x]=9
+						userTable[y]=9
+						cookie['userTable'] = userTable
+					#If cards don't match
+					else:
+						userTable[x]=0
+						userTable[y]=0
+						cookie['userTable'] = userTable
+	cookie['clickCount'] = 0
+	print cookie
 
 # Check GET/POST request
 if (cgi.FieldStorage()):
@@ -50,10 +69,10 @@ if (cgi.FieldStorage()):
 	if (form.getvalue('card')):
 		card = form.getvalue('card')
 		card = int(card)
-		userTable = cookie['userTable'].value
-		userTable = decodeList(userTable)
 		userTable[card] = 1
 		cookie['userTable'] = userTable
+		clickCount += 1
+		cookie['clickCount'] = clickCount
 		print cookie # IMPORTANT SAVE cookie
 
 topBody = '''
@@ -72,6 +91,8 @@ botBody = '''
 </html>
 '''
 
+metaRefresh = '<meta http-equiv="refresh" content="2;url=game.py">'
+
 def printGameTable():
 	print '<table>'
 	print '<tr>'
@@ -88,10 +109,11 @@ def printGameTable():
 	print '</tr>'
 	print '</table>'
 
-metaRefresh = '<meta http-equiv="refresh" content="2;url=game.py">'
 print 'Content-type: text/html\r\n\r'
 print topBody
 printGameTable()
+if (clickCount>1):
+	print metaRefresh
 print botBody
 #print originalTable
 #print metaRefresh
