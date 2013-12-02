@@ -166,7 +166,7 @@ roomIndex = '''
 				<a href="http://www.cs.mcgill.ca/~lwong27/room.html"><img id="door" src="/img/east.jpg"></a>
 			</span>
 
-			<div>
+
 			<form name="game" action="game.py?mode=game" method="post">
 			<input id="door" name="submit" type="image" src="/img/riddle.jpg" value="myValue" alt="" />
             <input type="hidden" name="points" value="0">
@@ -176,7 +176,6 @@ roomIndex = '''
             <input type="hidden" name="Inventory4" value="">
             <input type="hidden" name="Inventory5" value="">
 			</form>
-			</div>
 
 			<span id="west">
 				<a href="http://cs.mcgill.ca/~mwu33/room.html"><img id="door" src="/img/west.png"></a>               
