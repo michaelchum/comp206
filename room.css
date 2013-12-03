@@ -61,7 +61,11 @@ input.door{
 }
 
 #puzzle{
-
+        font-size:40;
+        background:none;
+        border:0;
+        font-family: Avant Garde, Century Gothic;
+        color:#C9EFFF;
 }
 
 #lookaround{
