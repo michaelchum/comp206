@@ -69,6 +69,15 @@ def gameMode():
 	# GET and POST requests
 	form = cgi.FieldStorage()
 
+	if os.environ['REQUEST_METHOD'] == 'POST':
+		cookie = Cookie.SimpleCookie(os.environ["HTTP_COOKIE"])
+		cookie['inventory1'] = ""
+		cookie['inventory2'] = ""
+		cookie['inventory3'] = ""
+		cookie['inventory4'] = ""
+		cookie['inventory5'] = ""
+		print cookie	
+
 	# Check if cookie exists if not, initialize cookie
 	try:
 		cookie = Cookie.SimpleCookie(os.environ["HTTP_COOKIE"])
@@ -99,31 +108,31 @@ def gameMode():
 
 	# Fetch Inventory1 and insert in cookie
 	if (form.getvalue('Inventory1')):
-		if (form.getvalue('Inventory1')!=""):
+		if (form.getvalue('Inventory1')):
 			cookie['inventory1'] = form.getvalue('Inventory1')
 			print cookie
 
 	# Fetch Inventory2 and insert in cookie
 	if (form.getvalue('Inventory2')):
-		if (str(form.getvalue('Inventory2'))!=""):
+		if (str(form.getvalue('Inventory2'))):
 			cookie['inventory2'] = str(form.getvalue('Inventory2'))
 			print cookie
 
 	# Fetch Inventory3 and insert in cookie
 	if (form.getvalue('Inventory3')):
-		if (str(form.getvalue('Inventory3'))!=""):
+		if (str(form.getvalue('Inventory3'))):
 			cookie['inventory3'] = form.getvalue('Inventory3')
 			print cookie
 
 	# Fetch Inventory4 and insert in cookie
 	if (form.getvalue('Inventory4')):
-		if (form.getvalue('Inventory4')!=""):
+		if (form.getvalue('Inventory4')):
 			cookie['inventory4'] = form.getvalue('Inventory4')
 			print cookie
 
 	# Fetch Inventory5 and insert in cookie
 	if (form.getvalue('Inventory5')):
-		if (form.getvalue('Inventory4')!=""):
+		if (form.getvalue('Inventory4')):
 			cookie['inventory5'] = form.getvalue('Inventory5')
 			print cookie
 

@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 
 import cgi, os, Cookie, datetime, string, csv
-import cgitb; 
+import cgitb;
 cgitb.enable()  # for debugging
+CURRENT_PATH = os.getcwd() # For path
+PROJECT_PATH = os.path.abspath(os.path.join(CURRENT_PATH, os.pardir))
+INVENTORY_PATH = os.path.join(PROJECT_PATH, 'Documents/inventory.csv')
+TEMP_PATH = os.path.join(PROJECT_PATH, 'Documents/temp.csv')
 
 ''' ROOM MODE CODE '''
 
@@ -41,7 +45,7 @@ roomIndex2 = '''</span> gold</p></span>
 			<td></td>
 			<td>
 				<center>
-					<form name="goNorth" action="http://cs.mcgill.ca/~dkim63/roomPage.html" method="post">
+					<form name="goNorth" action="http://cs.mcgill.ca/~zsu3/ass5/transfer.py" method="post">
 '''
 roomIndex3 = '''
 						<input type="image" img id="door" src="/img/north.jpg">
@@ -54,7 +58,7 @@ roomIndex3 = '''
 		<tr>
 			<td>
 				<center>
-					<form name="goWest" action="http://cs.mcgill.ca/~mwu33/room.html" method="post">
+					<form name="goWest" action="http://cs.mcgill.ca/~dbiggs3/cgi-bin/transfer.py" method="post">
 '''
 roomIndex4 = '''
 						<input type="image" img id="door" src="/img/west.png">
@@ -77,7 +81,7 @@ roomIndex5 = '''
 			</td>
 			<td>
 				<center>
-					<form name="goEast" action="http://www.cs.mcgill.ca/~lwong27/room.html" method="post">
+					<form name="goEast" action="http://www.cs.mcgill.ca/~mwu33/cgi-bin/transfer.py" method="post">
 '''
 roomIndex6 = '''
 						<input type="image" img id="door" src="/img/east.jpg">
@@ -92,7 +96,7 @@ roomIndex6 = '''
 			<td></td>
 			<td>
 				<center>
-					<form name="goSouth" action="http://cs.mcgill.ca/~dbiggs3/room.html" method="post">
+					<form name="goSouth" action="http://cs.mcgill.ca/~yxia19/ass5/cgi-bin/transfer.py" method="post">
 '''
 roomIndex7 = '''
 						<input type="image" img id="door" src="/img/south.jpg">
@@ -140,7 +144,7 @@ def roomMode():
 	if (form.getvalue('Inventory2')):
 		invent2 = form.getvalue('Inventory2')
 	if (form.getvalue('Inventory3')):
-		invent3 = str(form.getvalue('Inventory3'))
+		invent3 = form.getvalue('Inventory3')
 	if (form.getvalue('Inventory4')):
 		invent4 = form.getvalue('Inventory4')
 	if (form.getvalue('Inventory5')):
@@ -169,22 +173,45 @@ def roomMode():
 				item = invent5
 				invent5 = ""
 		if (item!=""):
-			output = open('/Library/WebServer/Documents/inventory.csv','a')
-			output.write('\n')
+			output = open(INVENTORY_PATH,'a')
 			output.write(item)
+			output.write('\n')
 			output.close()
 
-	# PICKU N command
+	# PICKUP N command
 	if (form.getvalue('command')):
 		command = str(form.getvalue('command'))
 		if "pickup" in command:
-			drop, number = command.split(" ", 1)
+			pickup, number = command.split(" ", 1)
 			number = int(number)
-		if (item!=""):
-			output = open('/Library/WebServer/Documents/inventory.csv','r+')
-			output.write('\n')
-			output.write(item)
-			output.close()
+			# Check if a slot is empty
+			if (invent1 == "" or invent2 == "" or invent3 == "" or invent4 == "" or invent5 == ""):
+				input = open(INVENTORY_PATH,'r')
+				output = open(TEMP_PATH,'w+')
+				s = input.readlines()
+				index = 1
+				for line in s:
+					singleLine = line.rstrip()
+					if (index!=number):
+						output.write(singleLine)
+						output.write('\n')
+					elif (index==number):
+						item = singleLine
+					index+=1
+				input.close()
+				output.close()
+				os.remove(INVENTORY_PATH)
+				os.rename(TEMP_PATH,INVENTORY_PATH)
+				if (invent1 == ""):
+					invent1 = item
+				elif (invent2 == ""):
+					invent2 = item
+				elif (invent3 == ""):
+					invent3 = item
+				elif (invent4 == ""):
+					invent4 = item
+				elif (invent5 == ""):
+					invent5 = item
 
 	print 'Content-type: text/html\r\n\r'
 	print roomIndex
@@ -205,9 +232,9 @@ def roomMode():
 	print '<input type="hidden" name="Inventory5" value="'+ invent5 + '">'
 	print roomIndex4
 	print '<input type="hidden" name="points" value="' + points + '">'
-	print '<input type="hidden" name="Inventory1" value="'+ "cookie" + '">'
+	print '<input type="hidden" name="Inventory1" value="'+ invent1 + '">'
 	print '<input type="hidden" name="Inventory2" value="'+ invent2 + '">'
-	print '<input type="hidden" name="Inventory3" value="'+ "slipper" + '">'
+	print '<input type="hidden" name="Inventory3" value="'+ invent3 + '">'
 	print '<input type="hidden" name="Inventory4" value="'+ invent4 + '">'
 	print '<input type="hidden" name="Inventory5" value="'+ invent5 + '">'
 	print roomIndex5
@@ -233,6 +260,17 @@ def roomMode():
 	print '<input type="hidden" name="Inventory5" value="'+ invent5 + '">'+'</form>'
 	print '<span class="command">'
 
+	# PICKUP N command
+	if (form.getvalue('command')):
+		if "pickup" in command:
+			pickup, number = command.split(" ", 1)
+			number = int(number)
+			# Check if item exists in datase
+			if (item==""):
+				print 'Your inventory is full or no such item in database'
+			else:
+				print "%s %s" % (item, 'has been added to your inventory')
+
 	# INVENTORY command
 	if (form.getvalue('command')):
 		if (form.getvalue('command')=='inventory'):
@@ -241,23 +279,38 @@ def roomMode():
 			if (invent1!=""):
 				print "%s %s" % ("1.", invent1)
 				print '<br>'
+			elif (invent1==""):
+				print "%s %s" % ("1.", "empty")
+				print '<br>'
 			if (invent2!=""):
 				print "%s %s" % ("2.", invent2)
+				print '<br>'
+			elif (invent2==""):
+				print "%s %s" % ("2.", "empty")
 				print '<br>'
 			if (invent3!=""):
 				print "%s %s" % ("3.", invent3)
 				print '<br>'
+			elif (invent3==""):
+				print "%s %s" % ("3.", "empty")
+				print '<br>'
 			if (invent4!=""):
 				print "%s %s" % ("4.", invent4)
 				print '<br>'
+			elif (invent4==""):
+				print "%s %s" % ("4.", "empty")
+				print '<br>'
 			if (invent5!=""):
 				print "%s %s" % ("5.", invent5)
+			elif (invent5==""):
+				print "%s %s" % ("5.", "empty")
+				print '<br>'
 
 	# LOOK command
 	if (form.getvalue('command')):
 		if (form.getvalue('command')=='look'):
 			try:
-				input = open('/Library/WebServer/Documents/inventory.csv')
+				input = open(INVENTORY_PATH)
 				s = input.readlines()
 				index = 1
 				for line in s:
@@ -296,19 +349,6 @@ def eraseInventoryCookie():
 	except (Cookie.CookieError, KeyError):
 		return
 
-def lookMode():
-	print 'Content-type: text/html\r\n\r'
-	print '<HTML><body>mold system/options/cgi</body></HTML>'
-	'''
-	file = open('/inventory.csv','r')
-	ReadData=csv.readerline(file)
-	print roomIndex
-	print '<p>'
-	for line in ReadData
-		print line
-	print '</p>'
-	print botGame
-	'''
 ''' END OF ROOM MODE CODE '''
 
 eraseInventoryCookie()
