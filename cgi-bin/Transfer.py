@@ -104,14 +104,12 @@ roomIndex7 = '''
 			<td></td>
 		</tr>
 		<br>
-			<form name="game" action="game.py" method="POST">
+			<form name="game" action="transfer.py" method="POST">
 				<span class="command">Command:</span><br>
 				<input type="text" name="command">
 				<input type="submit" name="submit"><br>
 '''
 roomIndex8 = '''
-			</form>
-
 		<br>
 			<span style="position:relative; left:320px; top:85px"><span id="lookaround">Look around</span></span>
 '''
@@ -122,17 +120,71 @@ botBody = '''
 '''
 
 def roomMode():
+
+	# Initialize transmission variables
 	points = "100"
+	
 	invent1 = ""
 	invent2 = ""
 	invent3 = ""
 	invent4 = ""
 	invent5 = ""
+
 	# Check GET/POST request for room and game
 	if (cgi.FieldStorage):
 		form = cgi.FieldStorage()
 	if (form.getvalue('points')):
 		points = form.getvalue('points')
+	if (form.getvalue('Inventory1')):
+		invent1 = form.getvalue('Inventory1')
+	if (form.getvalue('Inventory2')):
+		invent2 = form.getvalue('Inventory2')
+	if (form.getvalue('Inventory3')):
+		invent3 = str(form.getvalue('Inventory3'))
+	if (form.getvalue('Inventory4')):
+		invent4 = form.getvalue('Inventory4')
+	if (form.getvalue('Inventory5')):
+		invent5 = form.getvalue('Inventory5')
+
+	item = ""
+	# DROP N command
+	if (form.getvalue('command')):
+		command = str(form.getvalue('command'))
+		if "drop" in command:
+			drop, number = command.split(" ", 1)
+			number = int(number)
+			if(number==1):
+				item = invent1
+				invent1 = ""
+			elif(number==2):
+				item = invent2
+				invent2 = ""
+			elif(number==3):
+				item = invent3
+				invent3 = ""
+			elif(number==4):
+				item = invent4
+				invent4 = ""
+			elif(number==5):
+				item = invent5
+				invent5 = ""
+		if (item!=""):
+			output = open('/Library/WebServer/Documents/inventory.csv','a')
+			output.write('\n')
+			output.write(item)
+			output.close()
+
+	# PICKU N command
+	if (form.getvalue('command')):
+		command = str(form.getvalue('command'))
+		if "pickup" in command:
+			drop, number = command.split(" ", 1)
+			number = int(number)
+		if (item!=""):
+			output = open('/Library/WebServer/Documents/inventory.csv','r+')
+			output.write('\n')
+			output.write(item)
+			output.close()
 
 	print 'Content-type: text/html\r\n\r'
 	print roomIndex
@@ -153,9 +205,9 @@ def roomMode():
 	print '<input type="hidden" name="Inventory5" value="'+ invent5 + '">'
 	print roomIndex4
 	print '<input type="hidden" name="points" value="' + points + '">'
-	print '<input type="hidden" name="Inventory1" value="'+ invent1 + '">'
+	print '<input type="hidden" name="Inventory1" value="'+ "cookie" + '">'
 	print '<input type="hidden" name="Inventory2" value="'+ invent2 + '">'
-	print '<input type="hidden" name="Inventory3" value="'+ invent3 + '">'
+	print '<input type="hidden" name="Inventory3" value="'+ "slipper" + '">'
 	print '<input type="hidden" name="Inventory4" value="'+ invent4 + '">'
 	print '<input type="hidden" name="Inventory5" value="'+ invent5 + '">'
 	print roomIndex5
@@ -178,10 +230,71 @@ def roomMode():
 	print '<input type="hidden" name="Inventory2" value="'+ invent2 + '">'
 	print '<input type="hidden" name="Inventory3" value="'+ invent3 + '">'
 	print '<input type="hidden" name="Inventory4" value="'+ invent4 + '">'
-	print '<input type="hidden" name="Inventory5" value="'+ invent5 + '">'
+	print '<input type="hidden" name="Inventory5" value="'+ invent5 + '">'+'</form>'
+	print '<span class="command">'
+
+	# INVENTORY command
+	if (form.getvalue('command')):
+		if (form.getvalue('command')=='inventory'):
+			if (invent1=="" and invent2=="" and invent3=="" and invent4=="" and invent5==""):
+				print 'You have no items in your inventory'
+			if (invent1!=""):
+				print "%s %s" % ("1.", invent1)
+				print '<br>'
+			if (invent2!=""):
+				print "%s %s" % ("2.", invent2)
+				print '<br>'
+			if (invent3!=""):
+				print "%s %s" % ("3.", invent3)
+				print '<br>'
+			if (invent4!=""):
+				print "%s %s" % ("4.", invent4)
+				print '<br>'
+			if (invent5!=""):
+				print "%s %s" % ("5.", invent5)
+
+	# LOOK command
+	if (form.getvalue('command')):
+		if (form.getvalue('command')=='look'):
+			try:
+				input = open('/Library/WebServer/Documents/inventory.csv')
+				s = input.readlines()
+				index = 1
+				for line in s:
+					singleLine = line.rstrip()
+					print "%d%c %s" % (index, '.', singleLine)
+					print '<br>'
+					index+=1
+				input.close()
+			except IOError, (errno, strerror):
+				print 'No items in the database'
+
+	# DROP N command
+	if (form.getvalue('command')):
+		command = str(form.getvalue('command'))
+		if "drop" in command:
+			if (item!=""):
+				print "%s %s" % ('You dropped', item)
+			elif (item==""):
+				print "You have no item at this slot, nothing will be dropped"		
+
+	print '</span>'
 	print roomIndex8
 
 	print botBody
+
+# Erase inventory cookies coming from game room
+def eraseInventoryCookie():
+	try:
+		cookie = Cookie.SimpleCookie(os.environ["HTTP_COOKIE"])
+		cookie['inventory1']['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+		cookie['inventory2']['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+		cookie['inventory3']['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+		cookie['inventory4']['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+		cookie['inventory5']['expires'] = 'Thu, 01 Jan 1970 00:00:00 GMT'
+		print cookie # IMPORTANT SAVE cookie to expire immediately
+	except (Cookie.CookieError, KeyError):
+		return
 
 def lookMode():
 	print 'Content-type: text/html\r\n\r'
@@ -198,5 +311,5 @@ def lookMode():
 	'''
 ''' END OF ROOM MODE CODE '''
 
-
+eraseInventoryCookie()
 roomMode()

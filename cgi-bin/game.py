@@ -42,8 +42,7 @@ middleBody = '''
 pointsBody = '''<form name="game" action="transfer.py" method="post">
 			<input type="hidden" name="points" value="'''
 Inventory1Body ='''">
-			<input type="hidden" name="Inventory1" value="
-'''
+			<input type="hidden" name="Inventory1" value="'''
 Inventory2Body ='''">
 			<input type="hidden" name="Inventory2" value="'''
 Inventory3Body ='''">
@@ -55,7 +54,7 @@ Inventory5Body ='''">
 botBody ='''">
 			<input id="lower" type="submit" name="submitroom" value="Return to room">
 		</form>
-		<span><a id="logout" href="game.py?logout=logout">Logout to restart WARNING All items in your Inventory will be lost</a></span>
+		<span><a id="logout" href="game.py?logout=logout">Logout to restart WARNING All items in your inventory will be lost</a></span>
 	</body>
 </html>
 '''
@@ -100,28 +99,39 @@ def gameMode():
 
 	# Fetch Inventory1 and insert in cookie
 	if (form.getvalue('Inventory1')):
-		cookie['inventory1'] = form.getvalue('Inventory1')
-		print cookie
+		if (form.getvalue('Inventory1')!=""):
+			cookie['inventory1'] = form.getvalue('Inventory1')
+			print cookie
 
 	# Fetch Inventory2 and insert in cookie
 	if (form.getvalue('Inventory2')):
-		cookie['inventory2'] = form.getvalue('Inventory2')
-		print cookie
+		if (str(form.getvalue('Inventory2'))!=""):
+			cookie['inventory2'] = str(form.getvalue('Inventory2'))
+			print cookie
 
 	# Fetch Inventory3 and insert in cookie
 	if (form.getvalue('Inventory3')):
-		cookie['inventory3'] = form.getvalue('Inventory3')
-		print cookie
+		if (str(form.getvalue('Inventory3'))!=""):
+			cookie['inventory3'] = form.getvalue('Inventory3')
+			print cookie
 
 	# Fetch Inventory4 and insert in cookie
 	if (form.getvalue('Inventory4')):
-		cookie['inventory4'] = form.getvalue('Inventory4')
-		print cookie
+		if (form.getvalue('Inventory4')!=""):
+			cookie['inventory4'] = form.getvalue('Inventory4')
+			print cookie
 
 	# Fetch Inventory5 and insert in cookie
 	if (form.getvalue('Inventory5')):
-		cookie['inventory5'] = form.getvalue('Inventory5')
-		print cookie
+		if (form.getvalue('Inventory4')!=""):
+			cookie['inventory5'] = form.getvalue('Inventory5')
+			print cookie
+
+	invent1 = ""
+	invent2 = ""
+	invent3 = ""
+	invent4 = ""
+	invent5 = ""
 
 	# If second is already card open
 	if (clickCount > 1):
@@ -180,41 +190,46 @@ def gameMode():
 		print metaRefresh
 	print pointsBody
 	print points
-
-	print Inventory1Body
+	
 	try:
 		inventory = cookie['inventory1'].value
-		print inventory
+		if (inventory!='\r\n'):
+			invent1 = str(inventory)
 	except (KeyError):
 		pass
-	print Inventory2Body
+
 	try:
 		inventory = cookie['inventory2'].value
-		print inventory
+		if (inventory!='\r\n'):
+			invent2 = str(inventory)
 	except (KeyError):
 		pass
-	print Inventory3Body
+
 	try:
 		inventory = cookie['inventory3'].value
-		print inventory
+		if (inventory!='\r\n'):
+			invent3 = str(inventory)
 	except (KeyError):
 		pass
-	print Inventory4Body
+
 	try:
 		inventory = cookie['inventory4'].value
-		print inventory
+		if (inventory!='\r\n'):
+			invent4 = str(inventory)
 	except (KeyError):
 		pass
-	print Inventory5Body
+
 	try:
 		inventory = cookie['inventory5'].value
-		print inventory
+		if (inventory!='\r\n'):
+			invent5 = str(inventory)
 	except (KeyError):
 		pass
-
-	print botBody
+	
+	print "%s%s%s%s%s%s%s%s%s%s%s" % (Inventory1Body, invent1, Inventory2Body, invent2, Inventory3Body, invent3, Inventory4Body, invent4, Inventory5Body, invent5, botBody)
 
 ''' MAIN '''
+
 if os.environ['REQUEST_METHOD'] == 'GET':
 	arguments = cgi.FieldStorage()
 	for i in arguments.keys():
@@ -234,5 +249,4 @@ if os.environ['REQUEST_METHOD'] == 'GET':
 		gameMode()
 else:
 	gameMode()
-
 
