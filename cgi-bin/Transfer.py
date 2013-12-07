@@ -5,15 +5,15 @@ import cgitb;
 cgitb.enable()  # for debugging
 CURRENT_PATH = os.getcwd() # For path
 PROJECT_PATH = os.path.abspath(os.path.join(CURRENT_PATH, os.pardir))
-INVENTORY_PATH = os.path.join(PROJECT_PATH, 'Documents/inventory.csv')
-TEMP_PATH = os.path.join(PROJECT_PATH, 'Documents/temp.csv')
+INVENTORY_PATH = os.path.join(PROJECT_PATH, 'inventory.csv')
+TEMP_PATH = os.path.join(PROJECT_PATH, 'temp.csv')
 
 ''' ROOM MODE CODE '''
 
 roomIndex = '''
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="/room.css"/>
+		<link rel="stylesheet" type="text/css" href="../room.css"/>
 		<title> Portal room </title>
 	</head>
 
@@ -36,7 +36,7 @@ roomIndex2 = '''</span> gold</p></span>
 
 		<div id="banner">
 			<a id="banner">
-				<img src="/img/tron.jpg" border="0">
+				<img src="../img/tron.jpg" border="0">
 			</a>
 		</div>
 
@@ -48,7 +48,7 @@ roomIndex2 = '''</span> gold</p></span>
 					<form name="goNorth" action="http://cs.mcgill.ca/~zsu3/ass5/transfer.py" method="post">
 '''
 roomIndex3 = '''
-						<input type="image" img id="door" src="/img/north.jpg">
+						<input type="image" img id="door" src="../img/north.jpg">
 						<br>
 						<span>NORTH</span>
 					</form>
@@ -61,7 +61,7 @@ roomIndex3 = '''
 					<form name="goWest" action="http://cs.mcgill.ca/~dbiggs3/cgi-bin/transfer.py" method="post">
 '''
 roomIndex4 = '''
-						<input type="image" img id="door" src="/img/west.png">
+						<input type="image" img id="door" src="../img/west.png">
 						<br>
 						<span>WEST</span>
 					</form>
@@ -70,7 +70,7 @@ roomIndex4 = '''
 			<td>
 				<center>
 					<form name="game" action="game.py" method="POST">
-						<input id="door" name="submit" type="image" src="/img/riddle.jpg" value="myValue" alt="" />
+						<input id="door" name="submit" type="image" src="../img/riddle.jpg" value="myValue" alt="" />
 '''
 roomIndex5 = '''
 						<br>
@@ -84,7 +84,7 @@ roomIndex5 = '''
 					<form name="goEast" action="http://www.cs.mcgill.ca/~mwu33/cgi-bin/transfer.py" method="post">
 '''
 roomIndex6 = '''
-						<input type="image" img id="door" src="/img/east.jpg">
+						<input type="image" img id="door" src="../img/east.jpg">
 						<br>
 						<span>EAST</span>
 					</form>
@@ -99,7 +99,7 @@ roomIndex6 = '''
 					<form name="goSouth" action="http://cs.mcgill.ca/~yxia19/ass5/cgi-bin/transfer.py" method="post">
 '''
 roomIndex7 = '''
-						<input type="image" img id="door" src="/img/south.jpg">
+						<input type="image" img id="door" src="../img/south.jpg">
 						<br>
 						<span>SOUTH</span>
 					</form>

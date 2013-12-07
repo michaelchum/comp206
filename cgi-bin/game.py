@@ -28,7 +28,7 @@ def logout():
 topBody = '''
 <html>
 	<head>
-		<link rel="stylesheet" type="text/css" href="/game.css"/>
+		<link rel="stylesheet" type="text/css" href="../game.css"/>
 	</head>
 
 	<body>
@@ -70,13 +70,16 @@ def gameMode():
 	form = cgi.FieldStorage()
 
 	if os.environ['REQUEST_METHOD'] == 'POST':
-		cookie = Cookie.SimpleCookie(os.environ["HTTP_COOKIE"])
-		cookie['inventory1'] = ""
-		cookie['inventory2'] = ""
-		cookie['inventory3'] = ""
-		cookie['inventory4'] = ""
-		cookie['inventory5'] = ""
-		print cookie	
+		try:
+			cookie = Cookie.SimpleCookie(os.environ["HTTP_COOKIE"])
+			cookie['inventory1'] = ""
+			cookie['inventory2'] = ""
+			cookie['inventory3'] = ""
+			cookie['inventory4'] = ""
+			cookie['inventory5'] = ""
+			print cookie	
+		except (Cookie.CookieError, KeyError):
+			pass
 
 	# Check if cookie exists if not, initialize cookie
 	try:
@@ -184,11 +187,11 @@ def gameMode():
 	print '<tr>'
 	for x in range(16):
 		if (userTable[x]==0):
-			print '<td><a href=game.py?mode=game&card=' + str(x) + '><img src="/img/back.png"></a></td>'
+			print '<td><a href=game.py?mode=game&card=' + str(x) + '><img src="../img/back.png"></a></td>'
 		elif (userTable[x]==9):
-			print '<td><img src="/img/blank.jpg"></td>'
+			print '<td><img src="../img/blank.jpg"></td>'
 		elif (userTable[x]==1):
-			print '<td><img src="/img/card' + str(solTable[x]) + '.jpg"></td>'
+			print '<td><img src="../img/card' + str(solTable[x]) + '.jpg"></td>'
 		if (x==3 or x==7 or x==11):
 			print '</tr>'
 			print '<tr>'
